@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Profile — AMC AlumLink{% endblock %}
+{% block content %}
+<div class="profile-page">
+  <div class="profile-cover-area">
+    <div class="profile-cover" id="profileCover"></div>
+    <div class="profile-header-card card">
+      <div class="profile-avatar-wrap">
+        <img src="/static/images/default-avatar.png" alt="" class="profile-avatar" id="profileAvatar"/>
+        <button class="avatar-upload-btn hidden" id="avatarUploadBtn" onclick="document.getElementById('photoInput').click()">
+          <i class="fas fa-camera"></i>
+        </button>
+        <input type="file" id="photoInput" class="hidden" accept="image/*" onchange="uploadPhoto(this)"/>
+      </div>
+      <div class="profile-info">
+        <h1 id="profileName">Loading...</h1>
+        <p id="profileHeadline" class="profile-headline"></p>
+        <p id="profileLocation" class="profile-location"><i class="fas fa-map-marker-alt"></i> <span></span></p>
+        <div id="profileMeta" class="profile-meta"></div>
+      </div>
+      <div class="profile-actions" id="profileActions"></div>
+    </div>
+  </div>
+
+  <div class="profile-body">
+    <div class="profile-left">
+      <!-- About -->
+      <div class="card profile-section" id="aboutSection">
+        <div class="section-header">
+          <h3><i class="fas fa-user"></i> About</h3>
+          <button class="edit-btn hidden" id="editAboutBtn" onclick="openEditModal('about')"><i class="fas fa-pen"></i></button>
+        </div>
+        <p id="profileBio" class="profile-bio">No bio yet.</p>
+      </div>
+
+      <!-- Skills -->
+      <div class="card profile-section" id="skillsSection">
+        <div class="section-header">
+          <h3><i class="fas fa-code"></i> Skills</h3>
+          <button class="edit-btn hidden" id="editSkillsBtn" onclick="openEditModal('skills')"><i class="fas fa-pen"></i></button>
+        </div>
+        <div id="skillsList" class="skills-list"></div>
+      </div>
+
+      <!-- Experience (Alumni) -->
+      <div class="card profile-section hidden" id="expSection">
+        <div class="section-header">
+          <h3><i class="fas fa-briefcase"></i> Experience</h3>
+          <button class="edit-btn hidden" id="editExpBtn" onclick="openEditModal('experience')"><i class="fas fa-pen"></i></button>
+        </div>
+        <div id="expList"></div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="card profile-section" id="recsSection">
+        <div class="section-header">
+          <h3><i class="fas fa-star"></i> Recommendations</h3>
+          <button class="btn-outline-sm hidden" id="addRecBtn" onclick="openRecModal()">Add</button>
+        </div>
+        <div id="recsList"></div>
+      </div>
+
+      <!-- Posts -->
+      <div class="card profile-section">
+        <div class="section-header">
+          <h3><i class="fas fa-newspaper"></i> Posts</h3>
+        </div>
+        <div id="userPostsList"></div>
+      </div>
+    </div>
+
+    <div class="profile-right">
+      <!-- Student Info -->
+      <div class="card profile-section" id="studentInfoCard">
+        <h3><i class="fas fa-id-card"></i> Details</h3>
+        <div id="profileDetails" class="detail-list"></div>
+      </div>
+      <!-- Connections count -->
+      <div class="card profile-section">
+        <h3><i class="fas fa-users"></i> Connections</h3>
+        <p id="connectionCountText" class="conn-count-text">0 connections</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-overlay hidden" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="editModalTitle">Edit Profile</h3>
+      <button class="modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="editModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Recommendation Modal -->
+<div class="modal-overlay hidden" id="recModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Write a Recommendation</h3>
+      <button class="modal-close" onclick="document.getElementById('recModal').classList.add('hidden')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <textarea id="recText" rows="5" placeholder="Share your experience working with this person..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="document.getElementById('recModal').classList.add('hidden')">Cancel</button>
+      <button class="btn-primary" onclick="submitRec()">Submit</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>const VIEW_UID = "{{ view_uid if view_uid else '' }}";</script>
+<script src="/static/js/profile.js"></script>
+{% endblock %}

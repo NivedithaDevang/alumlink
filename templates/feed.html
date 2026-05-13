@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Feed — AMC AlumLink{% endblock %}
+{% block content %}
+<div class="page-layout">
+  <!-- Left Sidebar -->
+  <aside class="sidebar-left">
+    <div class="card profile-card-mini" id="sideProfileCard">
+      <div class="mini-cover"></div>
+      <img src="" alt="" class="mini-avatar" id="sideAvatar"/>
+      <h3 id="sideName">Loading...</h3>
+      <p id="sideRole" class="role-badge"></p>
+      <p id="sideDept" class="side-dept"></p>
+      <div class="side-stats">
+        <div class="stat"><span id="sideConns">0</span><small>Connections</small></div>
+        <div class="stat"><span id="sidePosts">0</span><small>Posts</small></div>
+      </div>
+      <a href="/profile" class="btn-outline-sm">View Profile</a>
+    </div>
+    <div class="card quick-links">
+      <h4>Quick Links</h4>
+      <a href="/feed?type=job"><i class="fas fa-briefcase"></i> Job Posts</a>
+      <a href="/feed?type=internship"><i class="fas fa-building"></i> Internships</a>
+      <a href="/feed?type=career_advice"><i class="fas fa-lightbulb"></i> Career Advice</a>
+      <a href="/feed?type=course"><i class="fas fa-book"></i> Courses</a>
+      <a href="/saved"><i class="fas fa-bookmark"></i> Saved Posts</a>
+    </div>
+  </aside>
+
+  <!-- Main Feed -->
+  <div class="feed-main">
+    <!-- Create Post -->
+    <div class="card create-post-card">
+      <div class="create-post-top">
+        <img src="" alt="" class="post-avatar" id="createAvatar"/>
+        <button class="create-post-btn" onclick="openPostModal()">What's on your mind?</button>
+      </div>
+      <div class="create-post-types">
+        <button onclick="openPostModal('job')"><i class="fas fa-briefcase"></i> Job</button>
+        <button onclick="openPostModal('internship')"><i class="fas fa-building"></i> Internship</button>
+        <button onclick="openPostModal('career_advice')"><i class="fas fa-lightbulb"></i> Career Advice</button>
+        <button onclick="openPostModal('course')"><i class="fas fa-book"></i> Course</button>
+        <button onclick="openPostModal('general')"><i class="fas fa-pen"></i> General</button>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-type="" onclick="filterPosts('',this)">All</button>
+      <button class="filter-btn" data-type="job" onclick="filterPosts('job',this)"><i class="fas fa-briefcase"></i> Jobs</button>
+      <button class="filter-btn" data-type="internship" onclick="filterPosts('internship',this)"><i class="fas fa-building"></i> Internships</button>
+      <button class="filter-btn" data-type="career_advice" onclick="filterPosts('career_advice',this)"><i class="fas fa-lightbulb"></i> Advice</button>
+      <button class="filter-btn" data-type="course" onclick="filterPosts('course',this)"><i class="fas fa-book"></i> Courses</button>
+      <button class="filter-btn" data-type="general" onclick="filterPosts('general',this)"><i class="fas fa-pen"></i> General</button>
+    </div>
+
+    <div id="postsContainer"><div class="loading-posts"><i class="fas fa-spinner fa-spin"></i> Loading feed...</div></div>
+  </div>
+
+  <!-- Right Sidebar -->
+  <aside class="sidebar-right">
+    <div class="card" id="suggestionsCard">
+      <h4><i class="fas fa-user-plus"></i> People You May Know</h4>
+      <div id="suggestionsList"></div>
+    </div>
+    <div class="card events-card">
+      <h4><i class="fas fa-calendar"></i> AMC Resources</h4>
+      <div class="resource-link"><i class="fas fa-globe"></i> <a href="https://www.facebook.com/amcecbangalore/" target="_blank">AMC Official Page</a></div>
+      <div class="resource-link"><i class="fas fa-envelope"></i> alumni@amc.edu</div>
+      <div class="resource-link"><i class="fas fa-phone"></i> +91 80 XXXX XXXX</div>
+    </div>
+  </aside>
+</div>
+
+<!-- Post Modal -->
+<div class="modal-overlay hidden" id="postModal">
+  <div class="modal modal-post">
+    <div class="modal-header">
+      <h3 id="postModalTitle">Create Post</h3>
+      <button class="modal-close" onclick="closePostModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Post Type</label>
+        <div class="type-selector" id="typeSelector">
+          <button class="type-btn" data-type="general" onclick="selectType('general',this)"><i class="fas fa-pen"></i> General</button>
+          <button class="type-btn" data-type="job" onclick="selectType('job',this)"><i class="fas fa-briefcase"></i> Job</button>
+          <button class="type-btn" data-type="internship" onclick="selectType('internship',this)"><i class="fas fa-building"></i> Internship</button>
+          <button class="type-btn" data-type="career_advice" onclick="selectType('career_advice',this)"><i class="fas fa-lightbulb"></i> Career Advice</button>
+          <button class="type-btn" data-type="course" onclick="selectType('course',this)"><i class="fas fa-book"></i> Course</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="postTitle" placeholder="Add a title..."/>
+      </div>
+      <div class="form-group">
+        <label>Content *</label>
+        <textarea id="postContent" placeholder="Share your thoughts, opportunities, or advice..." rows="5"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Tags (comma separated)</label>
+        <input type="text" id="postTags" placeholder="python, internship, bangalore"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closePostModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitPost()" id="postSubmitBtn">Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Post Modal -->
+<div class="modal-overlay hidden" id="editPostModal">
+  <div class="modal modal-post">
+    <div class="modal-header">
+      <h3>Edit Post</h3>
+      <button class="modal-close" onclick="document.getElementById('editPostModal').classList.add('hidden')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editPostId"/>
+      <div class="form-group">
+        <label>Post Type</label>
+        <select id="editPostType">
+          <option value="general">General</option>
+          <option value="job">Job</option>
+          <option value="internship">Internship</option>
+          <option value="career_advice">Career Advice</option>
+          <option value="course">Course</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="editPostTitle"/>
+      </div>
+      <div class="form-group">
+        <label>Content</label>
+        <textarea id="editPostContent" rows="5"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Tags</label>
+        <input type="text" id="editPostTags"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="document.getElementById('editPostModal').classList.add('hidden')">Cancel</button>
+      <button class="btn-primary" onclick="saveEditPost()">Save Changes</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/feed.js"></script>
+{% endblock %}

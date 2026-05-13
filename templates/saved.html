@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Saved Posts — AMC AlumLink{% endblock %}
+{% block content %}
+<div class="saved-page">
+  <div class="card" style="padding:1.5rem 2rem;margin-bottom:1rem;">
+    <h2><i class="fas fa-bookmark"></i> Saved Posts</h2>
+  </div>
+  <div id="savedPostsList"></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/feed.js"></script>
+<script>
+async function loadSaved(){
+  const r=await fetch('/api/saved_posts');
+  const posts=await r.json();
+  const el=document.getElementById('savedPostsList');
+  if(!posts.length){el.innerHTML='<div class="empty-state card"><i class="fas fa-bookmark"></i><p>No saved posts yet</p></div>';return;}
+  el.innerHTML=posts.map(p=>renderPost(p)).join('');
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  loadSaved();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AMC AlumLink — Register</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body class="auth-body">
+<div class="auth-container">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="auth-logo">A</div>
+      <h1>AMC AlumLink</h1>
+      <p>Administrative Management College</p>
+    </div>
+    <div class="auth-taglines">
+      <div class="tagline-item"><i class="fas fa-users"></i> Join 1000+ alumni & students</div>
+      <div class="tagline-item"><i class="fas fa-star"></i> Build your professional profile</div>
+      <div class="tagline-item"><i class="fas fa-network-wired"></i> Expand your network</div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card auth-card-wide">
+      <h2>Create Account</h2>
+      <p class="auth-subtitle">Join the AMC alumni-student network</p>
+      <div class="role-tabs">
+        <button class="role-tab active" data-role="student" onclick="setRole('student',this)">
+          <i class="fas fa-graduation-cap"></i> Student
+        </button>
+        <button class="role-tab" data-role="alumni" onclick="setRole('alumni',this)">
+          <i class="fas fa-user-tie"></i> Alumni
+        </button>
+      </div>
+      <div id="regError" class="alert alert-error hidden"></div>
+      <div class="reg-grid">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="name" placeholder="John Doe"/>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="email" placeholder="your@email.com"/>
+        </div>
+        <div class="form-group">
+          <label>Password *</label>
+          <input type="password" id="password" placeholder="Min 6 characters"/>
+        </div>
+        <div class="form-group">
+          <label>Department *</label>
+          <select id="dept">
+            <option value="">Select Department</option>
+            <option>BCA</option><option>BBA</option><option>MBA</option>
+            <option>MCA</option><option>B.Com</option><option>M.Com</option>
+            <option>B.Sc</option><option>Other</option>
+          </select>
+        </div>
+        <!-- Student fields -->
+        <div class="form-group student-field">
+          <label>USN Number</label>
+          <input type="text" id="usn" placeholder="1AM21CS001"/>
+        </div>
+        <div class="form-group student-field">
+          <label>Semester</label>
+          <select id="sem">
+            <option value="">Select Semester</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+          </select>
+        </div>
+        <div class="form-group student-field">
+          <label>Date of Birth</label>
+          <input type="date" id="dob"/>
+        </div>
+        <!-- Alumni fields -->
+        <div class="form-group alumni-field hidden">
+          <label>Current Company</label>
+          <input type="text" id="company" placeholder="Google, TCS, etc."/>
+        </div>
+        <div class="form-group alumni-field hidden">
+          <label>Designation</label>
+          <input type="text" id="designation" placeholder="Software Engineer"/>
+        </div>
+        <div class="form-group alumni-field hidden">
+          <label>Batch Year</label>
+          <input type="text" id="batch" placeholder="2020"/>
+        </div>
+        <div class="form-group alumni-field hidden">
+          <label>Location</label>
+          <input type="text" id="location" placeholder="Bangalore, India"/>
+        </div>
+      </div>
+      <button class="btn-primary btn-full" onclick="doRegister()">
+        <span>Create Account</span><i class="fas fa-arrow-right"></i>
+      </button>
+      <p class="auth-link">Already have an account? <a href="/login">Sign in</a></p>
+    </div>
+  </div>
+</div>
+<script>
+let currentRole='student';
+function setRole(role,btn){
+  currentRole=role;
+  document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.student-field').forEach(el=>el.classList.toggle('hidden',role!=='student'));
+  document.querySelectorAll('.alumni-field').forEach(el=>el.classList.toggle('hidden',role!=='alumni'));
+}
+async function doRegister(){
+  const err=document.getElementById('regError');
+  err.classList.add('hidden');
+  const data={
+    name:document.getElementById('name').value,
+    email:document.getElementById('email').value,
+    password:document.getElementById('password').value,
+    dept:document.getElementById('dept').value,
+    role:currentRole
+  };
+  if(currentRole==='student'){
+    data.usn=document.getElementById('usn').value;
+    data.sem=document.getElementById('sem').value;
+    data.dob=document.getElementById('dob').value;
+  } else {
+    data.company=document.getElementById('company').value;
+    data.designation=document.getElementById('designation').value;
+    data.batch=document.getElementById('batch').value;
+    data.location=document.getElementById('location').value;
+  }
+  if(!data.name||!data.email||!data.password){
+    err.textContent='Name, email and password are required';err.classList.remove('hidden');return;
+  }
+  if(data.password.length<6){err.textContent='Password must be at least 6 characters';err.classList.remove('hidden');return;}
+  const r=await fetch('/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const d=await r.json();
+  if(d.error){err.textContent=d.error;err.classList.remove('hidden');return;}
+  window.location.href='/feed';
+}
+</script>
+</body>
+</html>

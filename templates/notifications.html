@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Notifications — AMC AlumLink{% endblock %}
+{% block content %}
+<div class="notifs-page">
+  <div class="card">
+    <div class="section-header" style="padding:1.25rem 1.35rem;border-bottom:1px solid var(--border)">
+      <h2 style="font-size:1.1rem;font-weight:800;color:var(--primary);display:flex;align-items:center;gap:.5rem">
+        <i class="fas fa-bell" style="color:var(--accent)"></i> Notifications
+      </h2>
+      <button class="btn-outline-sm" onclick="markAllRead()">Mark all read</button>
+    </div>
+    <div id="notifsList"></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function timeAgo(dt) {
+  const d = new Date(dt), now = new Date();
+  const diff = Math.floor((now - d) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  return Math.floor(diff / 86400) + 'd ago';
+}
+
+function getNotifLink(n) {
+  if (n.type === 'connection' || n.type === 'connection_accepted') return '/network';
+  if (n.type === 'message') return '/messages';
+  if (n.type === 'like' || n.type === 'comment') return '/feed';
+  if (n.type === 'recommendation') return '/profile/' + n.from;
+  return '/feed';
+}
+
+async function loadNotifs() {
+  const el = document.getElementById('notifsList');
+  el.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    const r = await fetch('/api/notifications');
+    const notifs = await r.json();
+    if (!notifs.length) {
+      el.innerHTML = '<div class="empty-state"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>';
+      return;
+    }
+    el.innerHTML = notifs.map(n => `
+      <div class="notif-item ${n.read ? '' : 'unread'}" onclick="window.location='${getNotifLink(n)}'">
+        <img src="${n.from_info && n.from_info.photo ? n.from_info.photo : '/static/images/default-avatar.png'}"
+             class="notif-avatar" alt=""/>
+        <div class="notif-content">
+          <p>${n.message}</p>
+          <small><i class="fas fa-clock" style="margin-right:.3rem"></i>${timeAgo(n.created_at)}</small>
+        </div>
+        ${!n.read ? '<div class="notif-dot"></div>' : ''}
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load notifications</p></div>';
+  }
+}
+
+async function markAllRead() {
+  await fetch('/api/notifications/read', { method: 'POST' });
+  document.querySelectorAll('.notif-item').forEach(el => el.classList.remove('unread'));
+  document.querySelectorAll('.notif-dot').forEach(el => el.remove());
+  const badge = document.getElementById('notifBadge');
+  if (badge) badge.classList.add('hidden');
+}
+
+loadNotifs();
+</script>
+{% endblock %}

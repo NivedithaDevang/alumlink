@@ -1,0 +1,62 @@
+[
+  {
+    "id": "87ab456c-5961-4147-8ed8-bac30504159a",
+    "to": "bf79de2e-0655-49c7-a2f9-778d79253034",
+    "from": "3e857e67-2895-4845-80e5-16efc4c06fab",
+    "type": "connection",
+    "message": "Niveditha M sent you a connection request",
+    "ref_id": "245b9b10-e8a5-4e74-a5bf-f05e1459959f",
+    "read": true,
+    "created_at": "2026-03-15T18:51:28.502394"
+  },
+  {
+    "id": "b16ee53f-9ffd-4e41-b1db-d20c0d5b23e1",
+    "to": "3e857e67-2895-4845-80e5-16efc4c06fab",
+    "from": "06404797-dfb0-48ab-a861-70d997523926",
+    "type": "connection",
+    "message": "Dhanush sent you a connection request",
+    "ref_id": "612f571c-16c6-4315-9500-9fd02f546388",
+    "read": true,
+    "created_at": "2026-03-15T18:52:58.263751"
+  },
+  {
+    "id": "6ee80170-f9fc-4b0f-99cd-0d519aaee331",
+    "to": "3e857e67-2895-4845-80e5-16efc4c06fab",
+    "from": "06404797-dfb0-48ab-a861-70d997523926",
+    "type": "like",
+    "message": "liked your post",
+    "ref_id": "17edb3d2-4ac2-422c-9df2-c914f14cde28",
+    "read": true,
+    "created_at": "2026-03-15T18:53:26.883042"
+  },
+  {
+    "id": "a0b6b414-2a49-408f-ad93-54350d6afc8b",
+    "to": "3e857e67-2895-4845-80e5-16efc4c06fab",
+    "from": "06404797-dfb0-48ab-a861-70d997523926",
+    "type": "comment",
+    "message": "commented on your post",
+    "ref_id": "17edb3d2-4ac2-422c-9df2-c914f14cde28",
+    "read": true,
+    "created_at": "2026-03-15T18:53:33.087775"
+  },
+  {
+    "id": "78f7e8d8-31d7-4928-b52e-c22a123e4501",
+    "to": "06404797-dfb0-48ab-a861-70d997523926",
+    "from": "3e857e67-2895-4845-80e5-16efc4c06fab",
+    "type": "connection_accepted",
+    "message": "Niveditha M accepted your connection request",
+    "ref_id": "612f571c-16c6-4315-9500-9fd02f546388",
+    "read": false,
+    "created_at": "2026-03-15T18:53:46.836352"
+  },
+  {
+    "id": "eec0fb4c-d7f2-4225-b0e9-53eb2f67ff77",
+    "to": "3e857e67-2895-4845-80e5-16efc4c06fab",
+    "from": "bf79de2e-0655-49c7-a2f9-778d79253034",
+    "type": "connection_accepted",
+    "message": "AMC Admin accepted your connection request",
+    "ref_id": "245b9b10-e8a5-4e74-a5bf-f05e1459959f",
+    "read": true,
+    "created_at": "2026-03-15T19:10:50.779539"
+  }
+]

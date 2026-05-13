@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Messages — AMC AlumLink{% endblock %}
+{% block content %}
+<div class="messages-layout">
+
+  <!-- Left: Conversations -->
+  <div class="conversations-panel">
+    <div class="panel-header" style="display:flex;align-items:center;justify-content:space-between">
+      <h3><i class="fas fa-comment-dots"></i> Messages</h3>
+      <button onclick="showNewChatPanel()" title="New Chat"
+        style="background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem">
+        <i class="fas fa-pen"></i>
+      </button>
+    </div>
+
+    <!-- Search inside conversations -->
+    <div style="padding:.5rem .75rem;background:var(--primary-mid)">
+      <input type="text" id="convSearch" placeholder="Search conversations..."
+        oninput="filterConvs(this.value)"
+        style="width:100%;padding:.45rem .85rem;border-radius:20px;border:none;
+               background:rgba(255,255,255,.15);color:#fff;font-size:.8rem;outline:none"/>
+    </div>
+
+    <div id="conversationsList" class="conversations-list">
+      <div style="padding:2rem;text-align:center;color:rgba(255,255,255,.4);font-size:.85rem">
+        <i class="fas fa-spinner fa-spin"></i><br/>Loading...
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Chat -->
+  <div class="chat-panel">
+
+    <!-- Empty state -->
+    <div class="chat-empty" id="chatEmpty">
+      <i class="fas fa-comment-dots" style="font-size:4rem;color:var(--primary-light)"></i>
+      <h3 style="color:var(--primary);font-weight:800">Your Messages</h3>
+      <p style="color:var(--text-muted)">Select someone from the left panel to chat</p>
+      <button class="btn-primary" onclick="showNewChatPanel()" style="margin-top:.5rem">
+        <i class="fas fa-pen"></i> Start New Chat
+      </button>
+    </div>
+
+    <!-- New Chat Search Panel -->
+    <div class="hidden" id="newChatPanel" style="display:flex;flex-direction:column;height:100%">
+      <div style="background:var(--primary);padding:1rem 1.25rem;display:flex;align-items:center;gap:.75rem">
+        <button onclick="hideNewChatPanel()" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h4 style="color:#fff;font-weight:700;font-size:.95rem">New Message</h4>
+      </div>
+      <div style="padding:1rem">
+        <input type="text" id="newChatSearch" placeholder="Search by name or email..."
+          oninput="searchUsersForChat(this.value)"
+          style="width:100%;padding:.7rem 1rem;border:2px solid var(--border);border-radius:8px;font-size:.9rem;outline:none"/>
+      </div>
+      <div id="newChatResults" style="flex:1;overflow-y:auto;padding:0 1rem 1rem"></div>
+    </div>
+
+    <!-- Active Chat -->
+    <div class="chat-window hidden" id="chatWindow" style="display:flex;flex-direction:column;height:100%">
+      <div class="chat-header">
+        <img src="/static/images/default-avatar.png" alt="" class="chat-avatar" id="chatAvatar"
+             onerror="this.src='/static/images/default-avatar.png'"/>
+        <div class="chat-user-info">
+          <h4 id="chatName">Name</h4>
+          <span id="chatRole" class="role-badge"></span>
+        </div>
+        <a href="#" class="btn-ghost-sm" id="chatProfileBtn"
+           style="border-color:rgba(255,255,255,.4);color:#fff;margin-left:auto">
+          <i class="fas fa-user"></i> Profile
+        </a>
+      </div>
+
+      <div class="chat-messages" id="chatMessages"></div>
+
+      <div id="typingIndicator" class="hidden"
+           style="padding:.4rem 1.25rem;font-size:.78rem;color:var(--text-muted);font-style:italic;background:var(--bg)">
+        typing...
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" id="msgInput"
+               placeholder="Type a message and press Enter..."
+               onkeydown="handleMsgKey(event)"
+               autocomplete="off"/>
+        <button class="btn-send" onclick="sendMessage()">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/messages.js"></script>
+{% endblock %}

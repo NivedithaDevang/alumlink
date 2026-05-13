@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AMC AlumLink — Login</title>
+<link rel="stylesheet" href="/static/css/main.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body class="auth-body">
+<div class="auth-container">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="auth-logo">A</div>
+      <h1>AMC AlumLink</h1>
+      <p>Administrative Management College</p>
+    </div>
+    <div class="auth-taglines">
+      <div class="tagline-item"><i class="fas fa-handshake"></i> Connect with alumni</div>
+      <div class="tagline-item"><i class="fas fa-briefcase"></i> Discover opportunities</div>
+      <div class="tagline-item"><i class="fas fa-graduation-cap"></i> Grow your career</div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+      <p class="auth-subtitle">Sign in to your AMC AlumLink account</p>
+      <div id="authError" class="alert alert-error hidden"></div>
+      <div class="form-group">
+        <label>Email address</label>
+        <div class="input-icon">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" placeholder="your@email.com"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="••••••••"/>
+          <button class="toggle-password" onclick="togglePwd()"><i class="fas fa-eye" id="eyeIcon"></i></button>
+        </div>
+      </div>
+      <button class="btn-primary btn-full" onclick="doLogin()">
+        <span>Sign In</span><i class="fas fa-arrow-right"></i>
+      </button>
+      <p class="auth-link">Don't have an account? <a href="/register">Create one</a> | <a href="/forgot-password">Forgot password?</a></p>
+      <div class="auth-divider"><span>Admin?</span></div>
+      <p class="auth-hint"><i class="fas fa-info-circle"></i> Default admin: admin@amc.edu / admin123</p>
+    </div>
+  </div>
+</div>
+<script>
+function togglePwd(){
+  const p=document.getElementById('password');
+  const e=document.getElementById('eyeIcon');
+  if(p.type==='password'){p.type='text';e.className='fas fa-eye-slash';}
+  else{p.type='password';e.className='fas fa-eye';}
+}
+async function doLogin(){
+  const email=document.getElementById('email').value;
+  const password=document.getElementById('password').value;
+  const err=document.getElementById('authError');
+  err.classList.add('hidden');
+  if(!email||!password){err.textContent='Please fill all fields';err.classList.remove('hidden');return;}
+  const r=await fetch('/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+  const d=await r.json();
+  if(d.error){err.textContent=d.error;err.classList.remove('hidden');return;}
+  window.location.href='/feed';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>
